@@ -34,7 +34,7 @@ class Lexer {
         keywords.put("routine", ROUTINE);
         keywords.put("then", THEN);
         keywords.put("true", TRUE);
-        keywords.put("type", TRUE);
+        keywords.put("type", TYPE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
         keywords.put("xor", XOR);

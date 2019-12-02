@@ -26,6 +26,8 @@ abstract class Stmt {
 
         R visitReturnStmt(Return stmt);
 
+        R visitTypeDeclareStmt(TypeDeclare stmt);
+
         R visitVarStmt(Var stmt);
 
         R visitWhileStmt(While stmt);
@@ -74,6 +76,7 @@ abstract class Stmt {
         final List<Token> params;
         final List<Stmt> body;
         final Type returnType;
+
         Routine(Token name, List<Token> params, List<Stmt> body, Type returnType) {
             this.name = name;
             this.params = params;
@@ -105,6 +108,7 @@ abstract class Stmt {
         final boolean reverse;
         final Range range;
         final Stmt body;
+
         For(Token name, boolean reverse, Range range, Stmt body) {
             this.name = name;
             this.reverse = reverse;
@@ -121,6 +125,7 @@ abstract class Stmt {
         final Expr condition;
         final Stmt thenBranch;
         final Stmt elseBranch;
+
         If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
             this.condition = condition;
             this.thenBranch = thenBranch;
@@ -172,10 +177,25 @@ abstract class Stmt {
         }
     }
 
+    static class TypeDeclare extends Stmt {
+        final Token name;
+        final Type type;
+
+        TypeDeclare(Token name, Type type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitTypeDeclareStmt(this);
+        }
+    }
+
     static class Var extends Stmt {
         final Token name;
         final Expr initializer;
         final Type type;
+
         Var(Token name, Expr initializer, Type type) {
             this.name = name;
             this.initializer = initializer;

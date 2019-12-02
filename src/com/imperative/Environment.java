@@ -23,21 +23,32 @@ class Environment {
 
         if (enclosing != null) return enclosing.get(name);
 
-        throw new RuntimeError(name, "Undefine variable '" + name.lexeme + "'.");
+        throw new RuntimeError(name, "Undefine variable '" + name.lexeme);
     }
 
-    /** TODO:
-    Type getType(Token name) {
-        if (types.containsKey(name.lexeme)) {
-            return types.get(name.lexeme);
-        }
-
-        throw new RuntimeError(name, "Undefine variable '" + name.lexeme + "'.");
-    } */
+    /**
+     * TODO:
+     * Type getType(Token name) {
+     * if (types.containsKey(name.lexeme)) {
+     * return types.get(name.lexeme);
+     * }
+     *
+     * throw new RuntimeError(name, "Undefine variable '" + name.lexeme + "'.");
+     * }
+     */
 
     void define(String name, Object value, Type type) {
         values.put(name, value);
         types.put(name, type);
+    }
+
+    void defineType(Token name, Type type) {
+        if (values.containsKey(name.lexeme)) {
+            types.put(name.lexeme, type);
+            return;
+        }
+
+        throw new RuntimeError(name, "Undefined variable " + name.lexeme);
     }
 
     void assign(Token name, Object value) {

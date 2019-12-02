@@ -24,16 +24,26 @@ class Parser {
 
     private Stmt declaration() {
         try {
-            if (match(VAR)) return varDeclaration();
+            if (match(ARRAY)) return arrayDeclaration();
             if (match(RECORD)) return recordDeclaration();
             if (match(ROUTINE)) return routineDeclaration();
-            if (match(ARRAY)) return arrayDeclaration();
+            if (match(TYPE)) return typeDeclaration();
+            if (match(VAR)) return varDeclaration();
 
             return statement();
         } catch (ParserError error) {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt typeDeclaration() {
+        Token name = consume("Expected identifier of variable", IDENTIFIER);
+        consume("Expected 'IS' after identifier", IS);
+        Type type = getType();
+
+        consume("Expected ';' after type declaration.", SEMICOLON);
+        return new Stmt.TypeDeclare(name, type);
     }
 
     private Stmt arrayDeclaration() {
@@ -43,7 +53,7 @@ class Parser {
         if (!check(RIGHT_SQUARE_BRACE)) {
             do {
                 members.add(expression());
-            } while(match(COMMA));
+            } while (match(COMMA));
         }
 
         consume("Expected ']' after parameters.", RIGHT_SQUARE_BRACE);
@@ -331,15 +341,14 @@ class Parser {
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
-            } else if(match(DOT)) {
+            } else if (match(DOT)) {
                 Token name = consume("Expected property name after '.'.", IDENTIFIER);
                 expr = new Expr.Get(expr, name);
             } else if (match(LEFT_SQUARE_BRACE)) {
-               Token index = consume("Expected integer index", TYPE_INTEGER);
-               consume("Expected enclosing ']' after index", RIGHT_SQUARE_BRACE);
-               expr = new Expr.GetIndex(expr, Integer.parseInt(index.lexeme));
-            }
-            else {
+                Token index = consume("Expected integer index", TYPE_INTEGER);
+                consume("Expected enclosing ']' after index", RIGHT_SQUARE_BRACE);
+                expr = new Expr.GetIndex(expr, Integer.parseInt(index.lexeme));
+            } else {
                 break;
             }
         }

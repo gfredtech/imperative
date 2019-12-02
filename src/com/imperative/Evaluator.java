@@ -406,6 +406,12 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitTypeDeclareStmt(Stmt.TypeDeclare stmt) {
+        environment.defineType(stmt.name, stmt.type);
+        return null;
+    }
+
+    @Override
     public Void visitVarStmt(Stmt.Var statement) {
         Object value = null;
         if (statement.initializer != null) {
