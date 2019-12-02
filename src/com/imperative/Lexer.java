@@ -75,6 +75,12 @@ class Lexer {
             case '}':
                 addToken(RIGHT_BRACE);
                 break;
+            case '[':
+                addToken(LEFT_SQUARE_BRACE);
+                break;
+            case ']':
+                addToken(RIGHT_SQUARE_BRACE);
+                break;
             case ',':
                 addToken(COMMA);
                 break;

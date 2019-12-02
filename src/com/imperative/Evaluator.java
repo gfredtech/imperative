@@ -218,6 +218,13 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitGetIndexExpr(Expr.GetIndex expr) {
+        List<Expr> array = (ArrayList<Expr>) evaluate(expr.array);
+
+        return evaluate(array.get(expr.index-1));
+    }
+
+    @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
     }
@@ -296,6 +303,13 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         return object.toString();
 
+    }
+
+    @Override
+    public Void visitArrayStmt(Stmt.Array stmt) {
+        environment.define(stmt.name.lexeme, stmt.members,
+                new Type.ArrayType(stmt.name.lexeme));
+        return null;
     }
 
     @Override

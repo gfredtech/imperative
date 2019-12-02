@@ -14,6 +14,8 @@ abstract class Expr {
 
         R visitGetExpr(Get expr);
 
+        R visitGetIndexExpr(GetIndex expr);
+
         R visitGroupingExpr(Grouping expr);
 
         R visitLiteralExpr(Literal expr);
@@ -80,6 +82,20 @@ abstract class Expr {
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitGetExpr(this);
+        }
+    }
+
+    static class GetIndex extends Expr {
+        final Expr array;
+        final int index;
+
+        GetIndex(Expr array, int index) {
+            this.array = array;
+            this.index = index;
+        }
+
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitGetIndexExpr(this);
         }
     }
 

@@ -2,6 +2,7 @@ package com.imperative;
 
 enum TokenType {
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE,
+    LEFT_SQUARE_BRACE, RIGHT_SQUARE_BRACE,
     RIGHT_BRACE, COMMA, DOT, MINUS, PLUS,
     SLASH, STAR, PERCENT,
 

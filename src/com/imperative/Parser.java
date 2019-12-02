@@ -37,7 +37,18 @@ class Parser {
     }
 
     private Stmt arrayDeclaration() {
-        return null;
+        Token name = consume("Expected array name", IDENTIFIER);
+        consume("Expect '[' after array name.", LEFT_SQUARE_BRACE);
+        List<Expr> members = new ArrayList<>();
+        if (!check(RIGHT_SQUARE_BRACE)) {
+            do {
+                members.add(expression());
+            } while(match(COMMA));
+        }
+
+        consume("Expected ']' after parameters.", RIGHT_SQUARE_BRACE);
+        consume("Expected ';' after array declaration", SEMICOLON);
+        return new Stmt.Array(name, members);
     }
 
     private Stmt.Routine routineDeclaration(String kind) {
@@ -323,6 +334,10 @@ class Parser {
             } else if(match(DOT)) {
                 Token name = consume("Expected property name after '.'.", IDENTIFIER);
                 expr = new Expr.Get(expr, name);
+            } else if (match(LEFT_SQUARE_BRACE)) {
+               Token index = consume("Expected integer index", TYPE_INTEGER);
+               consume("Expected enclosing ']' after index", RIGHT_SQUARE_BRACE);
+               expr = new Expr.GetIndex(expr, Integer.parseInt(index.lexeme));
             }
             else {
                 break;
