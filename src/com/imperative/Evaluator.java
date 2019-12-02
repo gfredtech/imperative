@@ -218,8 +218,10 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitGetIndexExpr(Expr.GetIndex expr) {
-        List<Expr> array = (ArrayList<Expr>) evaluate(expr.array);
+        Object value = evaluate(expr.array);
+        List<Expr> array = (ArrayList<Expr>) value;
 
         return evaluate(array.get(expr.index - 1));
     }
