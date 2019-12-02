@@ -45,6 +45,7 @@ abstract class Expr {
         final Expr left;
         final Token operator;
         final Expr right;
+
         Binary(Expr left, Token operator, Expr right) {
             this.left = left;
             this.operator = operator;
@@ -60,6 +61,7 @@ abstract class Expr {
         final Expr callee;
         final Token paren;
         final List<Expr> arguments;
+
         Call(Expr callee, Token paren, List<Expr> arguments) {
             this.callee = callee;
             this.paren = paren;
@@ -127,6 +129,7 @@ abstract class Expr {
         final Expr left;
         final Token operator;
         final Expr right;
+
         Logical(Expr left, Token operator, Expr right) {
             this.left = left;
             this.operator = operator;

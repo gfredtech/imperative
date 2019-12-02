@@ -221,7 +221,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitGetIndexExpr(Expr.GetIndex expr) {
         List<Expr> array = (ArrayList<Expr>) evaluate(expr.array);
 
-        return evaluate(array.get(expr.index-1));
+        return evaluate(array.get(expr.index - 1));
     }
 
     @Override
