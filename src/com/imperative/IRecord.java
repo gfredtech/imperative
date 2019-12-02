@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 public class IRecord implements RoutineCallable {
-    final String name;
+    private final String name;
     private final Map<String, Object> fields = new HashMap<>();
 
-    public IRecord(Evaluator evaluator, String name, List<Stmt.Var> varFields) {
+    IRecord(Evaluator evaluator, String name, List<Stmt.Var> varFields) {
         this.name = name;
         for (Stmt.Var field : varFields) {
             set(field.name, evaluator.evaluate(field.initializer));

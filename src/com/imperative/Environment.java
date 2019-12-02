@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class Environment {
-    final Environment enclosing;
+    private final Environment enclosing;
     private final Map<String, Object> values = new HashMap<>();
     private final Map<String, Type> types = new HashMap<>();
 
@@ -26,20 +26,21 @@ class Environment {
         throw new RuntimeError(name, "Undefine variable '" + name.lexeme + "'.");
     }
 
+    /** TODO:
     Type getType(Token name) {
         if (types.containsKey(name.lexeme)) {
             return types.get(name.lexeme);
         }
 
         throw new RuntimeError(name, "Undefine variable '" + name.lexeme + "'.");
-    }
+    } */
 
     void define(String name, Object value, Type type) {
         values.put(name, value);
         types.put(name, type);
     }
 
-    public void assign(Token name, Object value) {
+    void assign(Token name, Object value) {
         if (values.containsKey(name.lexeme)) {
             values.put(name.lexeme, value);
             return;

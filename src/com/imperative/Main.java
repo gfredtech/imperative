@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Main {
     private static final Evaluator eval = new Evaluator();
-    static boolean hadError = false;
-    static boolean hadRuntimeError = false;
+    private static boolean hadError = false;
+    private static boolean hadRuntimeError = false;
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -55,8 +55,8 @@ public class Main {
         eval.interpret(statements);
     }
 
-    static void error(int line, String message) {
-        report(line, "", message);
+    static void error(int line) {
+        report(line, "", "Unexpected character.");
     }
 
     private static void report(int line, String where, String message) {

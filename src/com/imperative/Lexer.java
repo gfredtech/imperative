@@ -135,7 +135,7 @@ class Lexer {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    Main.error(line, "Unexpected character.");
+                    Main.error(line);
                 }
                 break;
 

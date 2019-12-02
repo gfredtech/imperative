@@ -412,9 +412,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             value = evaluate(statement.initializer);
         }
 
-        if (statement.type != null) {
-            // assertTypes(value, statement.type);
-        }
+        // assertTypes(value, statement.type);
 
         environment.define(statement.name.lexeme, value, statement.type);
         return null;

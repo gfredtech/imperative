@@ -26,7 +26,7 @@ class Parser {
         try {
             if (match(VAR)) return varDeclaration();
             if (match(RECORD)) return recordDeclaration();
-            if (match(ROUTINE)) return routineDeclaration("routine");
+            if (match(ROUTINE)) return routineDeclaration();
             if (match(ARRAY)) return arrayDeclaration();
 
             return statement();
@@ -51,9 +51,9 @@ class Parser {
         return new Stmt.Array(name, members);
     }
 
-    private Stmt.Routine routineDeclaration(String kind) {
-        Token name = consume("Expect " + kind + " name.", IDENTIFIER);
-        consume("Expect '(' after " + kind + " name.", LEFT_PAREN);
+    private Stmt.Routine routineDeclaration() {
+        Token name = consume("Expect  routine name.", IDENTIFIER);
+        consume("Expect '(' after  routine name.", LEFT_PAREN);
         List<Token> parameters = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
             do {
@@ -71,7 +71,7 @@ class Parser {
             returnType = getType();
         }
 
-        consume("Expected 'is' before " + kind + " body.", IS);
+        consume("Expected 'is' before " + "routine" + " body.", IS);
         List<Stmt> body = block();
         return new Stmt.Routine(name, parameters, body, returnType);
     }
