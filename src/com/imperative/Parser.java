@@ -25,13 +25,19 @@ class Parser {
     private Stmt declaration() {
         try {
             if (match(VAR)) return varDeclaration();
+            if (match(RECORD)) return recordDeclaration();
             if (match(ROUTINE)) return routineDeclaration("routine");
+            if (match(ARRAY)) return arrayDeclaration();
 
             return statement();
         } catch (ParserError error) {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt arrayDeclaration() {
+        return null;
     }
 
     private Stmt.Routine routineDeclaration(String kind) {
@@ -57,6 +63,21 @@ class Parser {
         consume("Expected 'is' before " + kind + " body.", IS);
         List<Stmt> body = block();
         return new Stmt.Routine(name, parameters, body, returnType);
+    }
+
+    private Stmt recordDeclaration() {
+        Token name = consume("Expected record name.", IDENTIFIER);
+        consume("Expected '{' before record body.", LEFT_BRACE);
+
+        List<Stmt.Var> fields = new ArrayList<>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            consume("Expected 'var' keyword", VAR);
+            fields.add((Stmt.Var) varDeclaration());
+        }
+
+        consume("Expected '}' after record body.", RIGHT_BRACE);
+        consume("Expected 'end' after '}'.", END);
+        return new Stmt.Record(name, fields);
     }
 
     private Stmt varDeclaration() {
@@ -299,7 +320,11 @@ class Parser {
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
-            } else {
+            } else if(match(DOT)) {
+                Token name = consume("Expected property name after '.'.", IDENTIFIER);
+                expr = new Expr.Get(expr, name);
+            }
+            else {
                 break;
             }
         }

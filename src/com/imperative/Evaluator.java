@@ -8,22 +8,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = globals;
 
     Evaluator() {
-        globals.define("clock", new RoutineCallable() {
-            @Override
-            public int arity() {
-                return 0;
-            }
-
-            @Override
-            public Object call(Evaluator evaluator, List<Object> arguments) {
-                return (double) System.currentTimeMillis() / 1000.0;
-            }
-
-            @Override
-            public String toString() {
-                return "<native routine>";
-            }
-        }, new Type.RoutineType("clock"));
     }
 
     void interpret(List<Stmt> statements) {
@@ -40,7 +24,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         statement.accept(this);
     }
 
-    private Object evaluate(Expr expr) {
+    Object evaluate(Expr expr) {
         return expr.accept(this);
     }
 
@@ -227,6 +211,13 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitGetExpr(Expr.Get expr) {
+        Object record = evaluate(expr.record);
+
+        return ((IRecord) record).get(expr.name);
+    }
+
+    @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
     }
@@ -380,6 +371,15 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitPrintStmt(Stmt.Print stmt) {
         Object value = evaluate(stmt.expression);
         System.out.println(stringify(value));
+        return null;
+    }
+
+    @Override
+    public Void visitRecordStmt(Stmt.Record stmt) {
+        environment.define(stmt.name.lexeme, null,
+                new Type.RecordType(stmt.name.lexeme));
+        IRecord record = new IRecord(this, stmt.name.lexeme, stmt.fields);
+        environment.assign(stmt.name, record);
         return null;
     }
 

@@ -20,6 +20,8 @@ abstract class Stmt {
 
         R visitPrintStmt(Print stmt);
 
+        R visitRecordStmt(Record stmt);
+
         R visitReturnStmt(Return stmt);
 
         R visitVarStmt(Var stmt);
@@ -123,6 +125,20 @@ abstract class Stmt {
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitPrintStmt(this);
+        }
+    }
+
+    static class Record extends Stmt {
+        final Token name;
+        final List<Stmt.Var> fields;
+
+        Record(Token name, List<Stmt.Var> fields) {
+            this.name = name;
+            this.fields = fields;
+        }
+
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitRecordStmt(this);
         }
     }
 

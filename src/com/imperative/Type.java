@@ -7,6 +7,8 @@ abstract class Type {
         R visitPrimitiveTypeType(PrimitiveType type);
 
         R visitRoutineTypeType(RoutineType type);
+
+        R visitRecordTypeType(RecordType type);
     }
 
     static class PrimitiveType extends Type {
@@ -30,6 +32,18 @@ abstract class Type {
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitRoutineTypeType(this);
+        }
+    }
+
+    static class RecordType extends Type {
+        final String name;
+
+        RecordType(String name) {
+            this.name = name;
+        }
+
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitRecordTypeType(this);
         }
     }
 }
