@@ -18,7 +18,7 @@ class IRoutine implements RoutineCallable {
     public Object call(Evaluator evaluator, List<Object> arguments) {
         Environment environment = new Environment(evaluator.globals);
         for (int i = 0; i < declaration.params.size(); i++) {
-            environment.define(declaration.params.get(i).lexeme, arguments.get(i), null);
+            environment.define(declaration.params.get(i), arguments.get(i), null);
         }
 
         try {

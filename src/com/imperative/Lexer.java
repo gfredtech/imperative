@@ -210,7 +210,8 @@ class Lexer {
 
     private boolean isAlpha(char c) {
         return (c >= 'a' && c <= 'z') ||
-                (c >= 'A' && c <= 'Z');
+               (c >= 'A' && c <= 'Z') ||
+               (c == '_');
     }
 
     private boolean isDigit(char c) {

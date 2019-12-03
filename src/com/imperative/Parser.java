@@ -42,13 +42,13 @@ class Parser {
         consume("Expected 'IS' after identifier", IS);
         Type type = getType();
 
-        consume("Expected ';' after type declaration.", SEMICOLON);
+        consume("Expected ';' or newline after type declaration.", SEMICOLON);
         return new Stmt.TypeDeclare(name, type);
     }
 
     private Stmt arrayDeclaration() {
         Token name = consume("Expected array name", IDENTIFIER);
-        consume("Expect '[' after array name.", LEFT_SQUARE_BRACE);
+        consume("Expected '[' after array name.", LEFT_SQUARE_BRACE);
         List<Expr> members = new ArrayList<>();
         if (!check(RIGHT_SQUARE_BRACE)) {
             do {
@@ -57,13 +57,13 @@ class Parser {
         }
 
         consume("Expected ']' after parameters.", RIGHT_SQUARE_BRACE);
-        consume("Expected ';' after array declaration", SEMICOLON);
+        consume("Expected ';' or newline after array declaration", SEMICOLON);
         return new Stmt.Array(name, members);
     }
 
     private Stmt.Routine routineDeclaration() {
-        Token name = consume("Expect  routine name.", IDENTIFIER);
-        consume("Expect '(' after  routine name.", LEFT_PAREN);
+        Token name = consume("Expected routine name.", IDENTIFIER);
+        consume("Expected '(' after  routine name.", LEFT_PAREN);
         List<Token> parameters = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
             do {
@@ -118,7 +118,7 @@ class Parser {
             throw error(peek(), "Type or initializer not specified for variable.");
         }
 
-        consume("Expected ';' after variable declaration.", SEMICOLON);
+        consume("Expected ';' or newline after variable declaration.", SEMICOLON);
         return new Stmt.Var(name, initializer, type);
     }
 
@@ -215,7 +215,7 @@ class Parser {
 
     private Stmt printStatement() {
         Expr value = expression();
-        consume("Expected ';' after value.", SEMICOLON);
+        consume("Expected ';' or newline after value.", SEMICOLON);
         return new Stmt.Print(value);
     }
 
@@ -273,7 +273,7 @@ class Parser {
 
     private Stmt expressionStatement() {
         Expr expr = expression();
-        consume("Expect ';' after expression.", SEMICOLON);
+        consume("Expected ';' ore newline after expression.", SEMICOLON);
         return new Stmt.Expression(expr);
     }
 
@@ -373,12 +373,16 @@ class Parser {
 
     private Expr primary() {
         if (match(FALSE))
-            return new Expr.Literal(false);
+            return new Expr.Literal(false, new Type.PrimitiveType(Primitive.BOOLEAN));
 
         if (match(TRUE))
-            return new Expr.Literal(true);
-        if (match(TYPE_INTEGER, TYPE_REAL)) {
-            return new Expr.Literal(previous().literal);
+            return new Expr.Literal(true, new Type.PrimitiveType(Primitive.BOOLEAN));
+
+        if (match(TYPE_INTEGER))
+            return new Expr.Literal(previous().literal, new Type.PrimitiveType(Primitive.INTEGER));
+
+        if (match(TYPE_REAL)) {
+            return new Expr.Literal(previous().literal, new Type.PrimitiveType(Primitive.REAL));
         }
 
         if (match(IDENTIFIER)) {

@@ -115,9 +115,11 @@ abstract class Expr {
 
     static class Literal extends Expr {
         final Object value;
+        final Type type;
 
-        Literal(Object value) {
+        Literal(Object value, Type type) {
             this.value = value;
+            this.type = type;
         }
 
         <R> R accept(Visitor<R> visitor) {

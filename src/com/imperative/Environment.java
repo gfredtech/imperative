@@ -23,7 +23,7 @@ class Environment {
 
         if (enclosing != null) return enclosing.get(name);
 
-        throw new RuntimeError(name, "Undefine variable '" + name.lexeme);
+        throw new RuntimeError(name, "Undefined variable '" + name.lexeme);
     }
 
     /**
@@ -37,14 +37,24 @@ class Environment {
      * }
      */
 
-    void define(String name, Object value, Type type) {
-        values.put(name, value);
-        types.put(name, type);
+    void define(Token name, Object value, Type type) {
+        if (!values.containsKey(name.lexeme)) {
+            values.put(name.lexeme, value);
+            types.put(name.lexeme, type);
+            return;
+        }
+
+        throw new RuntimeError(name, "Variable already defined in scope");
     }
 
     void defineType(Token name, Type type) {
-        if (values.containsKey(name.lexeme)) {
+        if (types.containsKey(name.lexeme)) {
             types.put(name.lexeme, type);
+            return;
+        }
+
+        if (enclosing != null) {
+            enclosing.defineType(name, type);
             return;
         }
 

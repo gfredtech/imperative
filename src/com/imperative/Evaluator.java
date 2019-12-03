@@ -7,9 +7,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     final Environment globals = new Environment();
     private Environment environment = globals;
 
-    Evaluator() {
-    }
-
     void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement : statements) {
@@ -43,7 +40,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         switch (expr.operator.type) {
             case GREATER:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left > (double) right;
@@ -60,7 +56,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 return (int) left > (int) right;
 
             case GREATER_EQUAL:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left >= (double) right;
@@ -76,7 +71,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 }
                 return (int) left >= (int) right;
             case LESS:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left < (double) right;
@@ -92,7 +86,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 }
                 return (int) left < (int) right;
             case LESS_EQUAL:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left <= (double) right;
@@ -109,13 +102,10 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
                 return (int) left <= (int) right;
             case SLASH_EQUAL:
-                checkOperands(expr.operator, left, right);
                 return !isEqual(left, right);
             case EQUAL_EQUAL:
-                checkOperands(expr.operator, left, right);
                 return isEqual(left, right);
             case PLUS:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left + (double) right;
@@ -132,7 +122,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
                 return (int) left + (int) right;
             case MINUS:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left - (double) right;
@@ -149,7 +138,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
                 return (int) left - (int) right;
             case SLASH:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left / (double) right;
@@ -166,7 +154,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
                 return (int) left / (int) right;
             case STAR:
-                checkOperands(expr.operator, left, right);
                 if (left instanceof Double && right instanceof Integer) {
                     right = ((Integer) right).doubleValue();
                     return (double) left * (double) right;
@@ -278,13 +265,6 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         throw new RuntimeError(operator, "Operand must be a number.");
     }
 
-    private void checkOperands(Token operator, Object left, Object right) {
-        if ((left instanceof Double || left instanceof Integer) &&
-                (right instanceof Double || right instanceof Integer))
-            return;
-        throw new RuntimeError(operator, "Operands must be numbers.");
-    }
-
     private boolean isTruthy(Object object) {
         if (object == null)
             return false;
@@ -309,7 +289,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitArrayStmt(Stmt.Array stmt) {
-        environment.define(stmt.name.lexeme, stmt.members,
+        environment.define(stmt.name, stmt.members,
                 new Type.ArrayType(stmt.name.lexeme));
         return null;
     }
@@ -342,7 +322,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitRoutineStmt(Stmt.Routine stmt) {
         IRoutine routine = new IRoutine(stmt);
-        environment.define(stmt.name.lexeme, routine,
+        environment.define(stmt.name, routine,
                 new Type.RoutineType(stmt.name.lexeme));
         return null;
     }
@@ -357,7 +337,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         int from = (int) evaluate(stmt.range.from);
         int to = (int) evaluate(stmt.range.to);
 
-        environment.define(stmt.name.lexeme, from, new Type.PrimitiveType(Primitive.INTEGER));
+        environment.define(stmt.name, from, new Type.PrimitiveType(Primitive.INTEGER));
 
         if (stmt.reverse) {
             while (from > to) {
@@ -392,7 +372,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitRecordStmt(Stmt.Record stmt) {
-        environment.define(stmt.name.lexeme, null,
+        environment.define(stmt.name, null,
                 new Type.RecordType(stmt.name.lexeme));
         IRecord record = new IRecord(this, stmt.name.lexeme, stmt.fields);
         environment.assign(stmt.name, record);
@@ -422,7 +402,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         // assertTypes(value, statement.type);
 
-        environment.define(statement.name.lexeme, value, statement.type);
+        environment.define(statement.name, value, statement.type);
         return null;
     }
 
