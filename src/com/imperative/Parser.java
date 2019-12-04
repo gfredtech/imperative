@@ -65,7 +65,7 @@ class Parser {
         Token name = consume("Expected routine name.", IDENTIFIER);
         consume("Expected '(' after  routine name.", LEFT_PAREN);
         List<Token> parameters = new ArrayList<>();
-        List<Token> types = new ArrayList<>();
+        List<Type> types = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
             do {
                 if (parameters.size() >= 69) {
@@ -74,7 +74,7 @@ class Parser {
 
                 parameters.add(consume("Expected parameter name.", IDENTIFIER));
                 consume("Expected : after parameter name", COLON);
-                types.add(consume("Expected type after ':'", IDENTIFIER));
+                types.add(getType());
             } while (match(COMMA));
         }
         consume("Expected ')' after parameters.", RIGHT_PAREN);
