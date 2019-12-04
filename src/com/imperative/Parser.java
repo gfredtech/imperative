@@ -65,6 +65,7 @@ class Parser {
         Token name = consume("Expected routine name.", IDENTIFIER);
         consume("Expected '(' after  routine name.", LEFT_PAREN);
         List<Token> parameters = new ArrayList<>();
+        List<Token> types = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
             do {
                 if (parameters.size() >= 69) {
@@ -72,6 +73,8 @@ class Parser {
                 }
 
                 parameters.add(consume("Expected parameter name.", IDENTIFIER));
+                consume("Expected : after parameter name", COLON);
+                types.add(consume("Expected type after ':'", IDENTIFIER));
             } while (match(COMMA));
         }
         consume("Expected ')' after parameters.", RIGHT_PAREN);
@@ -83,7 +86,7 @@ class Parser {
 
         consume("Expected 'is' before " + "routine" + " body.", IS);
         List<Stmt> body = block();
-        return new Stmt.Routine(name, parameters, body, returnType);
+        return new Stmt.Routine(name, parameters, types, body, returnType);
     }
 
     private Stmt recordDeclaration() {
