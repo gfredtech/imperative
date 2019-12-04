@@ -389,7 +389,7 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitTypeDeclareStmt(Stmt.TypeDeclare stmt) {
-        environment.defineType(stmt.name, stmt.type);
+        environment.defineTypeAlias(stmt.name, stmt.type);
         return null;
     }
 

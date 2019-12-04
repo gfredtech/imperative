@@ -7,6 +7,7 @@ class Environment {
     private final Environment enclosing;
     private final Map<String, Object> values = new HashMap<>();
     private final Map<String, Type> types = new HashMap<>();
+    private static final Map<String, Type> aliases = new HashMap<>();
 
     Environment() {
         enclosing = null;
@@ -73,5 +74,16 @@ class Environment {
         }
 
         throw new RuntimeError(name, "Undefined variable " + name.lexeme);
+    }
+
+    void defineTypeAlias(Token name, Type type) {
+        aliases.put(name.lexeme, type);
+    }
+
+    Type getTypeAlias(Token name) {
+        if (aliases.containsKey(name.lexeme)) {
+            return aliases.get(name.lexeme);
+        }
+        throw new RuntimeError(name, "Cannot find type in this scope.");
     }
 }

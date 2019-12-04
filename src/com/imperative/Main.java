@@ -46,7 +46,7 @@ public class Main {
     private static void run(String source) {
         Lexer lexer = new Lexer(source);
         List<Token> tokens = lexer.scanTokens();
-        Parser parser = new Parser(tokens);
+        Parser parser = new Parser(tokens, eval);
         List<Stmt> statements = parser.parse();
 
         if (hadError)

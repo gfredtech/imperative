@@ -7,10 +7,12 @@ import static com.imperative.TokenType.*;
 
 class Parser {
     private final List<Token> tokens;
+    private final Evaluator evaluator;
     private int current = 0;
 
-    Parser(List<Token> tokens) {
+    Parser(List<Token> tokens, Evaluator eval) {
         this.tokens = tokens;
+        this.evaluator = eval;
     }
 
     List<Stmt> parse() {
@@ -91,7 +93,6 @@ class Parser {
 
     private Stmt recordDeclaration() {
         Token name = consume("Expected record name.", IDENTIFIER);
-        consume("Expected '{' before record body.", LEFT_BRACE);
 
         List<Stmt.Var> fields = new ArrayList<>();
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
@@ -99,7 +100,6 @@ class Parser {
             fields.add((Stmt.Var) varDeclaration());
         }
 
-        consume("Expected '}' after record body.", RIGHT_BRACE);
         consume("Expected 'end' after '}'.", END);
         return new Stmt.Record(name, fields);
     }
@@ -133,7 +133,11 @@ class Parser {
         } else if (match(BOOLEAN)) {
             return new Type.PrimitiveType(Primitive.BOOLEAN);
         }
-        throw error(peek(), "Cannot find Type in scope.");
+        else {
+            Token prev = peek();
+            advance();
+            return evaluator.globals.getTypeAlias(prev);
+        }
     }
 
     private Expr expression() {
