@@ -37,7 +37,7 @@ public class Main {
         BufferedReader reader = new BufferedReader(input);
 
         for (; ; ) {
-            System.out.print("> ");
+            System.out.print(">> ");
             run(reader.readLine());
             hadError = false;
         }
@@ -49,10 +49,14 @@ public class Main {
         Parser parser = new Parser(tokens, eval);
         List<Stmt> statements = parser.parse();
 
+        AstPrinter printer = new AstPrinter();
+
+        printer.print(statements);
+
         if (hadError)
             return;
 
-        eval.interpret(statements);
+       //eval.interpret(statements);
     }
 
     static void error(int line) {

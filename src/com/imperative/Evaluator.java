@@ -400,35 +400,9 @@ class Evaluator implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             value = evaluate(statement.initializer);
         }
 
-        // assertTypes(value, statement.type);
-
         environment.define(statement.name, value, statement.type);
         return null;
     }
-
-   /* private Object assertTypeAnd(Object value, Type type) {
-        if (value == null) return;
-        if ()
-
-
-        if (((Type.PrimitiveType) type).type == Primitive.INTEGER) {
-            if (value instanceof Integer) {
-                return type;
-            }
-
-        } else if (((Type.PrimitiveType) type).type == Primitive.REAL) {
-            if (value instanceof Double ) {
-                return type;
-            }
-            if (value instanceof Integer) {
-                return new Type.PrimitiveType(Primitive.REAL);
-            }
-        } else if (((Type.PrimitiveType) type).type == Primitive.BOOLEAN) {
-            if (value instanceof Boolean) {
-                return type;
-            }
-        }
-    } */
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {

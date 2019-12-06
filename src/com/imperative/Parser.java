@@ -95,7 +95,7 @@ class Parser {
         Token name = consume("Expected record name.", IDENTIFIER);
 
         List<Stmt.Var> fields = new ArrayList<>();
-        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+        while (!check(END) && !isAtEnd()) {
             consume("Expected 'var' keyword", VAR);
             fields.add((Stmt.Var) varDeclaration());
         }
